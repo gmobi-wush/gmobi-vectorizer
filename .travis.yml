@@ -7,6 +7,9 @@ env:
   - CXX=g++-4.8
 
 before_script:
+  - echo ".libPaths(new = file.path(getwd(), '.lib'))" >> .Rprofile
+  - echo ".lib" >> ".npmignore"
+  - mkdir .lib
   - Rscript -e "install.packages('jsonlite', repos = 'https://cloud.r-project.org')"
 
 script: 
