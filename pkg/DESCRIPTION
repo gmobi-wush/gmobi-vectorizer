@@ -8,3 +8,9 @@ Maintainer: Wush Wu <wush.wu@generalmobi.com>
 Description: Vectorize json to sparse vector
 License: GPL(>= 3)
 Copyright: General Mobile Inc.
+Imports:
+    digest(>= 0.6.8),
+    Rcpp(>= 0.12.4)
+LinkingTo: Rcpp, digest
+Suggests: jsonlite
+RoxygenNote: 5.0.1

@@ -6,9 +6,12 @@ node_js:
 env:
   - CXX=g++-4.8
 
+before_script:
+  - Rscript -e "install.packages('jsonlite', repos = 'https://cloud.r-project.org')"
+
 script: 
   - npm test
-  - R CMD check pkg
+  - R CMD check --no-manual pkg
 
 addons:
   apt:
