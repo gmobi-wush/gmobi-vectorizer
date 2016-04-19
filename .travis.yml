@@ -1,11 +1,19 @@
 language: node_js
+
 node_js:
   - "0.10.38"
+
 env:
   - CXX=g++-4.8
+
+script: 
+  - npm test
+  - R CMD check pkg
+
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
+      - r-base
