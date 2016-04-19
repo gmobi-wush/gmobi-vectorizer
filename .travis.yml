@@ -8,7 +8,7 @@ node_js:
   - "0.10.38"
 
 env:
-  - CXX=g++-4.8
+  - CXX=g++-4.8 R_LIBS_USER=$HOME/R/Library
 
 before_script:
   - wget https://raw.githubusercontent.com/craigcitro/r-travis/master/scripts/travis-tool.sh
