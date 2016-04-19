@@ -11,11 +11,15 @@ env:
   - CXX=g++-4.8
 
 before_script:
+  - wget https://raw.githubusercontent.com/craigcitro/r-travis/master/scripts/travis-tool.sh
   - Rscript -e "install.packages(c('Rcpp', 'digest', 'jsonlite'), repos = c(CRAN = 'http://cran.rstudio.com'))"
 
 script: 
   - npm test
   - R CMD check --no-manual pkg
+
+after_failure:
+  - bash travis-tool.sh dump_logs
 
 addons:
   apt:
