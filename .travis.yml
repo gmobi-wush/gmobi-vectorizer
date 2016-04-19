@@ -1,11 +1,28 @@
 language: node_js
+
+sudo: false
+
 node_js:
   - "0.10.38"
+
+dist: trusty
+
 env:
   - CXX=g++-4.8
+
+before_script:
+  - echo ".libPaths(new = file.path(getwd(), '.lib'))" >> .Rprofile
+  - echo ".lib" >> ".npmignore"
+  - mkdir .lib
+  - Rscript -e "install.packages(c('Rcpp', 'digest', 'jsonlite'), c(CRAN = 'http://cran.rstudio.com'))"
+
+script: 
+  - npm test
+  - R CMD check --no-manual pkg
+
 addons:
   apt:
     sources:
-      - ubuntu-toolchain-r-test
+      - r-packages-trusty
     packages:
-      - g++-4.8
+      - r-base
