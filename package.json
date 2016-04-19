@@ -1,0 +1,22 @@
+{
+  "name": "gmobi-vectorizer",
+  "version": "0.1.0",
+  "description": "Transforming json to sparse vector with hashing trick",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gmobi-wush/gmobi-vectorizer.git"
+  },
+  "author": "Wush Wu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gmobi-wush/gmobi-vectorizer/issues"
+  },
+  "homepage": "https://github.com/gmobi-wush/gmobi-vectorizer"
+}
