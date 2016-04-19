@@ -11,15 +11,18 @@ env:
   - CXX=g++-4.8 R_LIBS_USER=$HOME/R/Library
 
 before_script:
-  - wget https://raw.githubusercontent.com/craigcitro/r-travis/master/scripts/travis-tool.sh
   - echo $R_LIBS_USER
   - ls $R_LIBS_USER || mkdir -p $R_LIBS_USER
   - Rscript -e "install.packages(c('Rcpp', 'digest', 'jsonlite'), repos = c(CRAN = 'http://cran.rstudio.com'))"
+  - wget https://raw.githubusercontent.com/craigcitro/r-travis/master/scripts/travis-tool.sh
+  - bash travis-tool.sh dump_sysinfo
 
 script: 
   - npm test
   - R CMD check --no-manual pkg
 
+after_success:
+  - bash travis-tool.sh dump_logs_by_extension out
 after_failure:
   - bash travis-tool.sh dump_logs
 
