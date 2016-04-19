@@ -12,6 +12,8 @@ env:
 
 before_script:
   - wget https://raw.githubusercontent.com/craigcitro/r-travis/master/scripts/travis-tool.sh
+  - echo $R_LIBS_USER
+  - ls $R_LIBS_USER || mkdir -p $R_LIBS_USER
   - Rscript -e "install.packages(c('Rcpp', 'digest', 'jsonlite'), repos = c(CRAN = 'http://cran.rstudio.com'))"
 
 script: 
