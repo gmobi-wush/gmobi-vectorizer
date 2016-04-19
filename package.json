@@ -18,5 +18,14 @@
   "bugs": {
     "url": "https://github.com/gmobi-wush/gmobi-vectorizer/issues"
   },
-  "homepage": "https://github.com/gmobi-wush/gmobi-vectorizer"
+  "homepage": "https://github.com/gmobi-wush/gmobi-vectorizer",
+  "dependencies": {
+    "node-murmurhash3": "hideo55/node-murmurhash3#0.3.4",
+    "check-types": "^6.0.0",
+    "underscore": "~1.5.1"
+  },
+  "devDependencies": {
+    "mocha": "^2.4.5",
+    "event-stream": "^3.3.2"
+  }
 }
