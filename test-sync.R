@@ -1,6 +1,6 @@
 library(jsonlite)
 library(GmobiVectorizer)
-Sys.setlocale(locale = "C")
+Sys.setlocale(locale = "en_US.UTF-8")
 ndlist <- dir("test/ndjson")
 for(type in c("", "-raw")) {
   for(fname in ndlist) {

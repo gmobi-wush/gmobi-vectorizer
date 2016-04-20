@@ -4,6 +4,7 @@ const
   path = require('path'),
   zlib = require('zlib'),
   es = require('event-stream'),
+  should = require('should'),
   vectorizer = require('../');
 
 describe.only("Test that vectorizer vectorize the request object", function() {
@@ -31,7 +32,18 @@ describe.only("Test that vectorizer vectorize the request object", function() {
             .pipe(es.map(function(line, cb) {
               var result;
               if (line.length > 0) {
-                result = JSON.stringify(vectorizer.vectorize_sort(JSON.parse(line), is_hash)) + "\n";
+                result = vectorizer.vectorize_sort(JSON.parse(line), is_hash);
+                result.i.should.be.instanceof(Array).and.have.lengthOf(result.x.length);
+                _.forEach(result.i, function(i) {
+                  if (type === "js") {
+                    i.should.be.a.Number;
+                  } else if (type === "js-raw") {
+                    i.should.be.a.String;
+                  } else {
+                    throw new Error("Invalid type " + type);
+                  }
+                });
+                result = JSON.stringify(result) + "\n";
               } else {
                 result = "";
               }
