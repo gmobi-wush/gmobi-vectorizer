@@ -3,6 +3,7 @@ const
   _ = require("underscore"),
   mm3 = require("murmurhash3"),
   check = require('check-types'),
+  transformer = require('./transformer'),
   seed = 20160419,
   size = 4194304;
 
@@ -50,7 +51,6 @@ function vectorize_hash(obj, prefix, retval) {
   return retval;
 }
 
-
 exports.vectorize = function(obj, hash) {
   if (hash) {
     return vectorize_hash(obj, "", {i : [], x : []});
@@ -71,3 +71,5 @@ exports.vectorize_sort = function(obj, hash) {
     x: _.map(index, function(i) {return result.x[i];})
   });
 };
+
+exports.Transformer = transformer.Transformer;
