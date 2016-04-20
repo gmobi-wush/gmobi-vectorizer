@@ -20,7 +20,7 @@ before_script:
   - mkdir -p test-sync/R
   - mkdir -p test-sync/js-raw
   - mkdir -p test-sync/R-raw
-  - R CMD check test-sync.R --no-manual
+  - R CMD check pkg --no-manual
 
 script: 
   - npm test
