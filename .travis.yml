@@ -16,10 +16,16 @@ before_script:
   - Rscript -e "install.packages(c('Rcpp', 'digest', 'jsonlite'), repos = c(CRAN = 'http://cran.rstudio.com'))"
   - wget https://raw.githubusercontent.com/craigcitro/r-travis/master/scripts/travis-tool.sh
   - bash travis-tool.sh dump_sysinfo
+  - mkdir -p test-sync/js
+  - mkdir -p test-sync/R
+  - mkdir -p test-sync/js-raw
+  - mkdir -p test-sync/R-raw
+  - R CMD check test-sync.R --no-manual
 
 script: 
   - npm test
-  - R CMD check --no-manual pkg
+  - R CMD INSTALL pkg && Rscript test-sync.R
+  - Rscript check-sync.R
 
 after_success:
   - bash travis-tool.sh dump_logs_by_extension out
