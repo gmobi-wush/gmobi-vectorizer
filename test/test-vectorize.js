@@ -6,7 +6,7 @@ const
   es = require('event-stream'),
   vectorizer = require('../');
 
-describe("Test that vectorizer vectorize the request object", function() {
+describe.only("Test that vectorizer vectorize the request object", function() {
 
   var ndjsons = _.filter(fs.readdirSync("test/ndjson"), function(s) {
     return /ndjson$/.test(s);

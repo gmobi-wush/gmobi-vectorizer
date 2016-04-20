@@ -1,51 +1,59 @@
 const 
   keyValueSeperator = '\1',
   _ = require("underscore"),
-  mm3 = require("murmurhash3"),
+  mm3 = require("node-murmurhash3"),
   check = require('check-types'),
   transformer = require('./transformer'),
   seed = 20160419,
   size = 4194304;
 
 function pmurhash32(s) {
-  return mm3.murmur32Sync(s, seed) % size;
+  return mm3.hash(s, seed) % size;
 }
 
-function vectorize(obj, prefix, retval) {
+function vectorize(obj, prefix, retval, operator) {
   _.forEach(Object.keys(obj), function(key) {
     if (check.object(obj[key])) {
       vectorize(obj[key], prefix + key + keyValueSeperator, retval);
-    } else if (check.array.of.string(obj[key])) {
-      _.map(obj[key], function(s) {
-        retval.i.push(prefix + key + keyValueSeperator + s);
-        retval.x.push(1.0);
-      });
     } else if (check.string(obj[key])) {
       retval.i.push(prefix + key + keyValueSeperator + obj[key]);
       retval.x.push(1.0);
     } else if (check.number(obj[key])) {
       retval.i.push(prefix + key);
       retval.x.push(obj[key]);
-    }
-  });
-  return retval;
-}
-
-function vectorize_hash(obj, prefix, retval) {
-  _.forEach(Object.keys(obj), function(key) {
-    if (check.object(obj[key])) {
-      vectorize_hash(obj[key], prefix + key + keyValueSeperator, retval);
     } else if (check.array.of.string(obj[key])) {
       _.map(obj[key], function(s) {
-        retval.i.push(pmurhash32(prefix + key + keyValueSeperator + s));
+        retval.i.push(prefix + key + keyValueSeperator + s);
         retval.x.push(1.0);
       });
-    } else if (check.string(obj[key])) {
-      retval.i.push(pmurhash32(prefix + key + keyValueSeperator + obj[key]));
+    } else if (check.array.of.number(obj[key])) {
+      _.map(obj[key], function(s) {
+        if (!check.integer(s)) {
+          throw new Error("Numeric Array is not supported!");
+        }
+        retval.i.push(prefix + key + keyValueSeperator + s);
+        retval.x.push(1.0);
+      });
+    } else if (check.array.of.object(obj[key])) {
+      if (obj[key].length > 1) throw new Error("Array of Object should only has length 1 or 0(skipped)");
+      if (obj[key].length == 1) {
+        vectorize(obj[key][0], prefix + key + keyValueSeperator, retval);
+      }
+    } else if (check.boolean(obj[key])) {
+      if (obj[key]) {
+        retval.i.push(prefix + key + keyValueSeperator + "TRUE");
+      } else {
+        retval.i.push(prefix + key + keyValueSeperator + "FALSE");
+      }
       retval.x.push(1.0);
-    } else if (check.number(obj[key])) {
-      retval.i.push(pmurhash32(prefix + key));
-      retval.x.push(obj[key]);
+    } else {
+      if (check.array(obj[key])) {
+        throw new Error("Unsupported Array type: " + _.map(obj[key], function(x) {
+          return Object.prototype.toString.call(x);
+        }).join(","));
+      } else {
+        throw new Error("Unsupported type: " + Object.prototype.toString.call(obj[key]));
+      }
     }
   });
   return retval;
@@ -53,9 +61,9 @@ function vectorize_hash(obj, prefix, retval) {
 
 exports.vectorize = function(obj, hash) {
   if (hash) {
-    return vectorize_hash(obj, "", {i : [], x : []});
+    return vectorize(obj, "", {i : [], x : []}, pmurhash32);
   } else {
-    return vectorize(obj, "", {i : [], x : []});
+    return vectorize(obj, "", {i : [], x : []}, function(x) {return x;});
   }
 };
 
