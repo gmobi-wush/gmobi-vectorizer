@@ -7,7 +7,7 @@ const
   should = require('should'),
   vectorizer = require('../');
 
-describe.only("Test that vectorizer vectorize the request object", function() {
+describe("Test that vectorizer vectorize the request object", function() {
 
   var ndjsons = _.filter(fs.readdirSync("test/ndjson"), function(s) {
     return /ndjson$/.test(s);
