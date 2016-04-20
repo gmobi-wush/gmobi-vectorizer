@@ -1,6 +1,8 @@
 const
   _ = require('underscore'),
   fs = require('fs'),
+  path = require('path'),
+  zlib = require('zlib'),
   es = require('event-stream'),
   vectorizer = require('../');
 
@@ -14,8 +16,14 @@ describe("Test that vectorizer vectorize the request object", function() {
       var dpath = './test-sync/js-raw/' + fname;
       it(spath, function(done) {
         var d = fs.createWriteStream(dpath);
-        var s = fs.createReadStream(spath)
-          .pipe(es.split())
+        var s0;
+        if (path.extname(spath) === '.ndjson') {
+          s0 = fs.createReadStream(spath);
+        } else if (path.extname(spath) === '.gz') {
+          this.timeout(100000);
+          s0 = fs.createReadStream(spath).pipe(zlib.createGunzip());
+        }
+        var s = s0.pipe(es.split())
           .pipe(es.map(function(line, cb) {
             var result;
             if (line.length > 0) {
@@ -39,8 +47,14 @@ describe("Test that vectorizer vectorize the request object", function() {
       var dpath = './test-sync/js/' + fname;
       it(spath, function(done) {
         var d = fs.createWriteStream(dpath);
-        var s = fs.createReadStream(spath)
-          .pipe(es.split())
+        var s0;
+        if (path.extname(spath) === '.ndjson') {
+          s0 = fs.createReadStream(spath);
+        } else if (path.extname(spath) === '.gz') {
+          this.timeout(100000);
+          s0 = fs.createReadStream(spath).pipe(zlib.createGunzip());
+        }
+        var s = s0.pipe(es.split())
           .pipe(es.map(function(line, cb) {
             var result;
             if (line.length > 0) {
