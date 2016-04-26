@@ -11,8 +11,8 @@ exports.vectorize = function(obj, hash, errHandler) {
   }
 };
 
-exports.vectorize_sort = function(obj, hash) {
-  var result = exports.vectorize(obj, hash);
+exports.vectorize_sort = function(obj, hash, errHandler) {
+  var result = exports.vectorize(obj, hash, errHandler);
   var index = [];
   for(i = 0;i < result.i.length;i++) {
     index.push(i);

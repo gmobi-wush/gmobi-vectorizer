@@ -34,7 +34,12 @@ describe("Test that vectorizer vectorize the request object", function() {
               var result;
               if (line.length > 0) {
                 var src = JSON.parse(line);
-                result = vectorizer.vectorize_sort(src, is_hash);
+                try {
+                  result = vectorizer.vectorize_sort(src, is_hash);
+                } catch (ex) {
+                  ex.message.should.equal('Numeric Array is not supported!');
+                  result = vectorizer.vectorize_sort(src, is_hash, function(x) {});
+                }
                 result.i.should.be.instanceof(Array).and.have.lengthOf(result.x.length);
                 _.forEach(result.i, function(i) {
                   if (type === "js") {
