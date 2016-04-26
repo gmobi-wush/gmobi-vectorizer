@@ -3,7 +3,7 @@ append_prefix <- function(prefix, key) {
 }
 
 #'@export
-vectorize <- function(src, dst = NULL, schema = NULL, hash = FALSE, skipField = TRUE, skipLine = TRUE, intern = TRUE) {
+vectorize_cli <- function(src, dst = NULL, schema = NULL, hash = FALSE, skipField = TRUE, skipLine = TRUE, intern = TRUE) {
   src <- normalizePath(src, mustWork = TRUE)
   if (!is.null(dst)) dst <- normalizePath(dst, mustWork = TRUE)
   if (!is.null(schema)) schema <- normalizePath(schema, mustWork = TRUE)
@@ -23,7 +23,8 @@ vectorize <- function(src, dst = NULL, schema = NULL, hash = FALSE, skipField = 
   })
 }
 
-vectorize.R <- function(obj, hash = TRUE, sort = FALSE) {
+#'@export
+vectorize <- function(obj, hash = TRUE, sort = FALSE) {
   retval <- if (hash) {
     .vectorize(obj, retval = list(i = integer(0), x = numeric(0)), operator = hash_internal)
   } else .vectorize(obj)
