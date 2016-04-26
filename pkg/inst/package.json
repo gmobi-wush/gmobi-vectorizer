@@ -1,6 +1,6 @@
 {
   "name" : "GmobiVectorizer-cli",
-  "version" : @VERSION@,
+  "version" : "^0.1.0",
   "description" : "Command Line App for GmobiVectorizer",
   "main" : "index.js",
   "bin" : {
