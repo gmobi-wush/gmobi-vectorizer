@@ -11,6 +11,11 @@ function pmurhash32(s) {
 }
 
 function vectorize(obj, prefix, retval, operator) {
+  if (check.string(obj)) {
+    retval.i.push(obj);
+    retval.x.push(1.0);
+    return retval;
+  }
   _.forEach(Object.keys(obj), function(key) {
     if (check.object(obj[key])) {
       vectorize(obj[key], prefix + key + keyValueSeperator, retval, operator);
@@ -62,3 +67,4 @@ exports.pmurhash32 = pmurhash32;
 
 exports.vectorize = vectorize;
 
+exports.keyValueSeperator = keyValueSeperator;

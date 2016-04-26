@@ -1,8 +1,12 @@
 [
   {
-    "required" : ["app\u0002id", "device\u0002geo\u0002city"]
+    "require" : ["app\u0002id", "device\u0002geo\u0002city"],
+    "include" : [],
+    "interaction" : []
   },
   {
-    "required" : ["ext\u0002udi"]
+    "require" : ["ext\u0002udi"],
+    "include" : [],
+    "interaction" : []
   }
 ]

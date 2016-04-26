@@ -5,6 +5,7 @@ const
   zlib = require('zlib'),
   es = require('event-stream'),
   should = require('should'),
+  assert = require('assert'),
   vectorizer = require('../');
 
 describe("Test that vectorizer vectorize the request object", function() {
@@ -32,7 +33,8 @@ describe("Test that vectorizer vectorize the request object", function() {
             .pipe(es.map(function(line, cb) {
               var result;
               if (line.length > 0) {
-                result = vectorizer.vectorize_sort(JSON.parse(line), is_hash);
+                var src = JSON.parse(line);
+                result = vectorizer.vectorize_sort(src, is_hash);
                 result.i.should.be.instanceof(Array).and.have.lengthOf(result.x.length);
                 _.forEach(result.i, function(i) {
                   if (type === "js") {
@@ -44,6 +46,7 @@ describe("Test that vectorizer vectorize the request object", function() {
                   }
                 });
                 result = JSON.stringify(result) + "\n";
+                assert.deepEqual(src, JSON.parse(line));
               } else {
                 result = "";
               }

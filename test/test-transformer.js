@@ -4,6 +4,7 @@ const
   path = require('path'),
   zlib = require('zlib'),
   es = require('event-stream'),
+  assert = require('assert'),
   vectorizer = require('../');
 
 describe("Test that Transformer transform the request object", function() {
@@ -25,11 +26,12 @@ describe("Test that Transformer transform the request object", function() {
         .pipe(es.map(function(line, cb) {
           var result;
           if (line.length > 0) {
-            var obj = JSON.parse(line);
-            debugger;
-            obj = transformer.transform(obj);
+            var src = JSON.parse(line);
+            var dst = transformer.transform(src);
+            result = JSON.stringify(dst) + "\n";
+            assert.deepEqual(src, JSON.parse(line));
           }
-        cb(null, "");
+        cb(null, result);
       }))
         .pipe(d);
       s.on('finish', function() {
@@ -40,7 +42,7 @@ describe("Test that Transformer transform the request object", function() {
 
 });
 
-describe.only("Test that Required Transformer throws error if the property is not existed", function() {
+describe("Test that Required Transformer throws error if the property is not existed", function() {
   var fname = "example.json";
   it(fname, function(done) {
     var schemas = require("./error-schema/" + fname);
