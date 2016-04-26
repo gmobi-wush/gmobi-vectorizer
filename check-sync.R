@@ -1,12 +1,23 @@
 library(jsonlite)
-js <- fromJSON(readLines("test-sync/js-raw/example.ndjson", n = 1))
-R <- fromJSON(readLines("test-sync/R-raw/example.ndjson", n = 1))
 
-stopifnot(all(js$i == R$i))
-stopifnot(all(js$x == R$x))
+is_pass <- TRUE
 
-js <- fromJSON(readLines("test-sync/js/example.ndjson", n = 1))
-R <- fromJSON(readLines("test-sync/R/example.ndjson", n = 1))
-
-stopifnot(all(js$i == R$i))
-stopifnot(all(js$x == R$x))
+invisible(lapply(c("", "-raw"), function(type) {
+  jsdir <- sprintf("test-sync/js%s", type)
+  Rdir <- sprintf("test-sync/R%s", type)
+  lapply(intersect(dir(jsdir), dir(Rdir)), function(fname) {
+    jspath <- file.path(jsdir, fname)
+    js <- lapply(readLines(jspath), fromJSON)
+    Rpath <- file.path(Rdir, fname)
+    R <- lapply(readLines(Rpath), fromJSON)
+    if (isTRUE(all.equal(js, R))) {
+      print(sprintf("%s under type: %s is passed!", fname, type))
+    } else {
+      print(sprintf("%s under type: %s is failed!", fname, type))
+      is_pass <<- FALSE
+    }
+    NULL
+  })
+  NULL
+}))
+stopifnot(is_pass)

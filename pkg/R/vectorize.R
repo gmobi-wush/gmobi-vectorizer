@@ -16,7 +16,19 @@ vectorize <- function(obj, hash = TRUE, sort = FALSE) {
 .vectorize <- function(obj, prefix = "", retval = list(i = character(0), x = numeric(0)), operator = function(x) x) {
   for(key in names(obj)) {
     if (is.list(obj[[key]])) {
-      retval <- .vectorize(obj[[key]], append_prefix(prefix, key), retval, operator)
+      if (is.null(names(obj[[key]]))) {
+        if (length(obj[[key]]) == 1 & is.list(obj[[key]][[1]])) {
+          stopifnot(!is.null(names(obj[[key]][[1]])))
+          retval <- .vectorize(obj[[key]][[1]], append_prefix(prefix, key), retval, operator)
+        } else {
+          x <- unlist(obj[[key]])
+          key2 <- paste0(append_prefix(prefix, key), x)
+          retval$i <- append(retval$i, operator(key2))
+          retval$x <- append(retval$x, rep(1.0, length(x)))
+        }
+      } else {
+        retval <- .vectorize(obj[[key]], append_prefix(prefix, key), retval, operator)
+      }
     } else if (is.character(obj[[key]])) {
       key2 <- paste0(append_prefix(prefix, key), obj[[key]])
       retval$i <- append(retval$i, operator(key2))
