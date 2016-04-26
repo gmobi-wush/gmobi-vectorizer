@@ -9,6 +9,8 @@
   "author" : "Wush Wu",
   "license" : "ISC",
   "dependencies": {
-    "vectorizer": "gmobi-wush/gmobi-vectorizer"
+    "commander" : "^2.9.0"
+    "event-stream": "^3.3.2",
+    "vectorizer" : "gmobi-wush/gmobi-vectorizer"
   }
 }
