@@ -3,11 +3,11 @@ const
   vectorizer = require("./vectorizer"),
   transformer = require('./transformer');
 
-exports.vectorize = function(obj, hash) {
+exports.vectorize = function(obj, hash, errHandler) {
   if (hash) {
-    return vectorizer.vectorize(obj, "", {i : [], x : []}, vectorizer.pmurhash32);
+    return vectorizer.vectorize(obj, "", {i : [], x : []}, vectorizer.pmurhash32, errHandler);
   } else {
-    return vectorizer.vectorize(obj, "", {i : [], x : []}, function(x) {return x;});
+    return vectorizer.vectorize(obj, "", {i : [], x : []}, function(x) {return x;}, errHandler);
   }
 };
 
