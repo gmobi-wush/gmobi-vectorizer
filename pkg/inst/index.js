@@ -16,6 +16,7 @@ program
   .option('--hash', 'Whether to hash the feature or not')
   .option('--skipField', 'Skip the unsupported fields')
   .option('--skipLine', 'Skip the unsupported lines')
+  .option('-s, --schema [schema]', 'The schema of the "Transformer"')
   .parse(process.argv);
 
 var stream;
@@ -39,11 +40,24 @@ if (program.skipField) {
   };
 }
 
+var transformer;
+if (program.schema) {
+  var obj = new vectorizer.Transformer();
+  obj.initialize(require(program.schema));
+  transformer = function(x) {
+    return obj.transform(x);
+  };
+} else {
+  transformer = function(x) {
+    return x;
+  };
+}
+
 stream = stream.pipe(es.split())
   .pipe(es.map(function(line, cb) {
     try {
       if (line.length > 0) {
-        line = JSON.stringify(vectorizer.vectorize_sort(JSON.parse(line), program.hash, errHandler));
+        line = JSON.stringify(vectorizer.vectorize_sort(transformer(JSON.parse(line)), program.hash, errHandler));
       }
       line += "\n";
     } catch (ex) {
