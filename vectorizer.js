@@ -10,7 +10,12 @@ function pmurhash32(s) {
   return mm3.murmur32Sync(s, seed) % size;
 }
 
-function vectorize(obj, prefix, retval, operator) {
+function vectorize(obj, prefix, retval, operator, errHandler) {
+  if (!errHandler) {
+    errHandler = function(x) {
+      throw new Error(x);
+    };
+  }
   if (check.string(obj)) {
     retval.i.push(obj);
     retval.x.push(1.0);
@@ -27,13 +32,13 @@ function vectorize(obj, prefix, retval, operator) {
       retval.x.push(obj[key]);
     } else if (check.array.of.string(obj[key])) {
       _.map(obj[key], function(s) {
-        retval.i.push(operator(prefix + key + keyValueSeperator + s))
+        retval.i.push(operator(prefix + key + keyValueSeperator + s));
         retval.x.push(1.0);
       });
     } else if (check.array.of.number(obj[key])) {
       _.map(obj[key], function(s) {
         if (!check.integer(s)) {
-          throw new Error("Numeric Array is not supported!");
+          errHandler("Numeric Array is not supported!");
         }
         retval.i.push(operator(prefix + key + keyValueSeperator + s));
         retval.x.push(1.0);
@@ -52,11 +57,11 @@ function vectorize(obj, prefix, retval, operator) {
       retval.x.push(1.0);
     } else {
       if (check.array(obj[key])) {
-        throw new Error("Unsupported Array type: " + _.map(obj[key], function(x) {
+        errHandler("Unsupported Array type: " + _.map(obj[key], function(x) {
           return Object.prototype.toString.call(x);
         }).join(","));
       } else {
-        throw new Error("Unsupported type: " + Object.prototype.toString.call(obj[key]));
+        errHandler("Unsupported type: " + Object.prototype.toString.call(obj[key]));
       }
     }
   });
