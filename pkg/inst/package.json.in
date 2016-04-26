@@ -7,7 +7,7 @@
     "vectorize" : "index.js"
   },
   "author" : "Wush Wu",
-  "license" : "ISC"
+  "license" : "ISC",
   "dependencies": {
     "vectorizer": "gmobi-wush/gmobi-vectorizer"
   }
