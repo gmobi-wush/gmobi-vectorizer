@@ -11,7 +11,7 @@ function pmurhash32(s) {
 }
 
 function vectorize(obj, prefix, retval, operator, errHandler) {
-  if (!errHandler) {
+  if (typeof errHandler === "undefined") {
     errHandler = function(x) {
       throw new Error(x);
     };
@@ -23,7 +23,7 @@ function vectorize(obj, prefix, retval, operator, errHandler) {
   }
   _.forEach(Object.keys(obj), function(key) {
     if (check.object(obj[key])) {
-      vectorize(obj[key], prefix + key + keyValueSeperator, retval, operator);
+      vectorize(obj[key], prefix + key + keyValueSeperator, retval, operator, errHandler);
     } else if (check.string(obj[key])) {
       retval.i.push(operator(prefix + key + keyValueSeperator + obj[key]));
       retval.x.push(1.0);
@@ -46,7 +46,7 @@ function vectorize(obj, prefix, retval, operator, errHandler) {
     } else if (check.array.of.object(obj[key])) {
       if (obj[key].length > 1) throw new Error("Array of Object should only has length 1 or 0(skipped)");
       if (obj[key].length == 1) {
-        vectorize(obj[key][0], prefix + key + keyValueSeperator, retval, operator);
+        vectorize(obj[key][0], prefix + key + keyValueSeperator, retval, operator, errHandler);
       }
     } else if (check.boolean(obj[key])) {
       if (obj[key]) {

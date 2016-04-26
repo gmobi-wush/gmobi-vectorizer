@@ -85,10 +85,8 @@ Transformer.factories.include = function(properties) {
           currentObj = currentObj[p];
           currentRetval = currentRetval[p];
         });
-        debugger;
         _.extend(currentRetval, currentObj);
       });
-      debugger;
       return retval;
     }
   });
