@@ -9,6 +9,7 @@ vectorize_cli <- function(src, dst = NULL, schema = NULL, hash = FALSE, skipFiel
   if (!is.null(schema)) schema <- normalizePath(schema, mustWork = TRUE)
   argv <- c()
   argv <- append(argv, sprintf("-i %s", src))
+  if (tools::file_ext(src) == "gz") argv <- append(argv, "--ig")
   if (!is.null(dst)) argv <- append(argv, sprintf("-o %s", dst))
   if (!is.null(schema)) argv <- append(argv, sprintf("-s %s", schema))
   if (hash) argv <- append(argv, "--hash")
