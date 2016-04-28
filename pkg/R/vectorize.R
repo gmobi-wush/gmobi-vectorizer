@@ -3,11 +3,12 @@ append_prefix <- function(prefix, key) {
 }
 
 #'@export
-vectorize_cli <- function(src, dst = NULL, schema = NULL, hash = FALSE, skipField = TRUE, skipLine = TRUE, intern = TRUE) {
+vectorize_cli <- function(src, dst = NULL, schema = NULL, hash = FALSE, skipField = TRUE, skipLine = TRUE, intern = TRUE, verbose = TRUE) {
   src <- normalizePath(src, mustWork = TRUE)
   if (!is.null(dst)) dst <- normalizePath(dst, mustWork = TRUE)
   if (!is.null(schema)) schema <- normalizePath(schema, mustWork = TRUE)
   argv <- c()
+  argv <- append(argv, sprintf("-i %s", src))
   if (!is.null(dst)) argv <- append(argv, sprintf("-o %s", dst))
   if (!is.null(schema)) argv <- append(argv, sprintf("-s %s", schema))
   if (hash) argv <- append(argv, "--hash")
@@ -17,6 +18,7 @@ vectorize_cli <- function(src, dst = NULL, schema = NULL, hash = FALSE, skipFiel
   current.wd <- getwd()
   tryCatch({
     setwd(system.file(".", package = .packageName))
+    if (verbose) cat(sprintf("%s\n", cmd))
     system(cmd, intern = intern)
   }, finally = {
     setwd(current.wd)
