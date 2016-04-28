@@ -3,6 +3,29 @@ append_prefix <- function(prefix, key) {
 }
 
 #'@export
+vectorize_cli <- function(src, dst = NULL, schema = NULL, hash = FALSE, skipField = TRUE, skipLine = TRUE, intern = TRUE, verbose = TRUE) {
+  src <- normalizePath(src, mustWork = TRUE)
+  if (!is.null(dst)) dst <- normalizePath(dst, mustWork = TRUE)
+  if (!is.null(schema)) schema <- normalizePath(schema, mustWork = TRUE)
+  argv <- c()
+  argv <- append(argv, sprintf("-i %s", src))
+  if (!is.null(dst)) argv <- append(argv, sprintf("-o %s", dst))
+  if (!is.null(schema)) argv <- append(argv, sprintf("-s %s", schema))
+  if (hash) argv <- append(argv, "--hash")
+  if (skipField) argv <- append(argv, "--skipField")
+  if (skipLine) argv <- append(argv, "--skipLine")
+  cmd <- sprintf("node index.js %s", paste(argv, collapse = " "))
+  current.wd <- getwd()
+  tryCatch({
+    setwd(system.file(".", package = .packageName))
+    if (verbose) cat(sprintf("%s\n", cmd))
+    system(cmd, intern = intern)
+  }, finally = {
+    setwd(current.wd)
+  })
+}
+
+#'@export
 vectorize <- function(obj, hash = TRUE, sort = FALSE) {
   retval <- if (hash) {
     .vectorize(obj, retval = list(i = integer(0), x = numeric(0)), operator = hash_internal)

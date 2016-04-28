@@ -2,6 +2,7 @@
 
 export(hash_internal)
 export(vectorize)
+export(vectorize_cli)
 import(digest)
 importFrom(Rcpp,sourceCpp)
 useDynLib(GmobiVectorizer)

@@ -1,0 +1,16 @@
+{
+  "name" : "GmobiVectorizer-cli",
+  "version" : "0.1.0",
+  "description" : "Command Line App for GmobiVectorizer",
+  "main" : "index.js",
+  "bin" : {
+    "vectorize" : "index.js"
+  },
+  "author" : "Wush Wu",
+  "license" : "ISC",
+  "dependencies": {
+    "commander" : "^2.9.0",
+    "event-stream": "^3.3.2",
+    "vectorizer" : "gmobi-wush/gmobi-vectorizer"
+  }
+}
