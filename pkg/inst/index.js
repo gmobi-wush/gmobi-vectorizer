@@ -23,7 +23,8 @@ var stream;
 if (program.input) {
   stream = fs.createReadStream(program.input);
 } else {
-  throw new Error("Input is required!");
+  process.stdin.resume();
+  stream = process.stdin;
 }
 
 if (program.ig) {
