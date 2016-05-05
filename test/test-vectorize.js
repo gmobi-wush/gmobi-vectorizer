@@ -40,6 +40,11 @@ describe("Test that vectorizer vectorize the request object", function() {
                   ex.message.should.equal('Numeric Array is not supported!');
                   result = vectorizer.vectorize_sort(src, is_hash, function(x) {});
                 }
+                if (!!fname.match(/example3.ndjson/)) {
+                  _.forEach(result.x, function(x) {
+                    assert.equal(x, 1);
+                  });
+                }
                 result.i.should.be.instanceof(Array).and.have.lengthOf(result.x.length);
                 _.forEach(result.i, function(i) {
                   if (type === "js") {
