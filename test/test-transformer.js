@@ -28,7 +28,7 @@ describe("Test that Transformer transform the request object", function() {
           if (line.length > 0) {
             var src = JSON.parse(line);
             var dst = transformer.transform(src);
-            if(fname == "example2.json") {
+            if (fname == "example2.json") {
               assert.strictEqual(dst.ad.cap, undefined);
             }
             result = JSON.stringify(dst) + "\n";
