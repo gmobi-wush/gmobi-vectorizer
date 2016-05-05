@@ -28,12 +28,14 @@ Transformer.prototype.initialize = function(schemas) {
   });
 
   var $ = this;
-  // generating trnasformer from schema
+  // generating transformations from schema
   _.forEach(schemas, function(schema) {
     _.forEach(schema.require, function(property) {
       $.transformersList.push(Transformer.factories.require(property));
     });
-    $.transformersList.push(Transformer.factories.include(schema.include));
+    if (schema.include.length > 0) {
+      $.transformersList.push(Transformer.factories.include(schema.include));
+    }
     _.forEach(schema.interaction, function(properties) {
       if (properties.length != 2) {
         throw Error("Invalid properties of interaction");
@@ -87,10 +89,12 @@ Transformer.factories.include = function(properties) {
           currentRetval = currentRetval[p];
         });
         var last_key = _.tail(property, -1);
-        if (check.object(currentObj[last_key])) {
-          _.extend(currentRetval[last_key], currentObj[last_key]);
-        } else {
-          currentRetval[last_key] = currentObj[last_key];
+        if (_.has(currentObj, last_key)) {
+          if (check.object(currentObj[last_key])) {
+            _.extend(currentRetval[last_key], currentObj[last_key]);
+          } else {
+            currentRetval[last_key] = currentObj[last_key];
+          }
         }
       });
       return retval;
