@@ -1,0 +1,9 @@
+[
+  {
+    "require" : ["ad\u0002id", "ad\u0002cid", "req"],
+    "include" : ["ad\u0002id", "ad\u0002cid", "req"],
+    "interaction" : [
+      ["ad\u0002id", "req"]
+    ]
+  }
+]
