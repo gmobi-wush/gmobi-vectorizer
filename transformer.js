@@ -1,5 +1,6 @@
 const 
   _ = require('underscore'),
+  check = require('check-types'),
   vectorizer = require('./vectorizer');
 
 function validateProperty(obj, property) {
@@ -45,7 +46,7 @@ Transformer.prototype.initialize = function(schemas) {
 Transformer.prototype.transform = function(src) {
   var obj = _.clone(src);
   _.forEach(this.transformersList, function(transformer) {
-    transformer.transform(obj);
+    obj = transformer.transform(obj);
   });
   return obj;
 };
@@ -81,11 +82,16 @@ Transformer.factories.include = function(properties) {
       _.forEach(propertiesPath, function(property) {
         createNestedObject(retval, property);
         var currentObj = obj, currentRetval = retval;
-        _.forEach(property, function(p) {
+        _.forEach(_.head(property, -1), function(p) {
           currentObj = currentObj[p];
           currentRetval = currentRetval[p];
         });
-        _.extend(currentRetval, currentObj);
+        var last_key = _.tail(property, -1);
+        if (check.object(currentObj[last_key])) {
+          _.extend(currentRetval[last_key], currentObj[last_key]);
+        } else {
+          currentRetval[last_key] = currentObj[last_key];
+        }
       });
       return retval;
     }
