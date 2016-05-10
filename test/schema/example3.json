@@ -2,7 +2,13 @@
   {
     "require" : ["ad\u0002id", "ad\u0002cid", "req"],
     "include" : ["ad\u0002id", "ad\u0002cid", "req"],
-    "binning" : [],
+    "binning" : [
+      {
+        "path" : "req\u0002user\u0002yob",
+        "type" : "division",
+        "args" : 100
+      }
+    ],
     "interaction" : [
       ["ad\u0002id", "req"]
     ]

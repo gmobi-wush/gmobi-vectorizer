@@ -24,6 +24,7 @@ Transformer.prototype.initialize = function(schemas) {
   _.forEach(schemas, function(schema) {
     validateProperty(schema, "require");
     validateProperty(schema, "include");
+    validateProperty(schema, "binning");
     validateProperty(schema, "interaction");
   });
 
@@ -36,6 +37,9 @@ Transformer.prototype.initialize = function(schemas) {
     if (schema.include.length > 0) {
       $.transformersList.push(Transformer.factories.include(schema.include));
     }
+    if (schema.binning.length > 0) {
+      $.transformersList.push(Transformer.factories.binning(schema.binning));
+    }
     _.forEach(schema.interaction, function(properties) {
       if (properties.length != 2) {
         throw Error("Invalid properties of interaction");
@@ -46,7 +50,7 @@ Transformer.prototype.initialize = function(schemas) {
 };
 
 Transformer.prototype.transform = function(src) {
-  var obj = _.clone(src);
+  var obj = JSON.parse(JSON.stringify(src));
   _.forEach(this.transformersList, function(transformer) {
     obj = transformer.transform(obj);
   });
@@ -98,6 +102,59 @@ Transformer.factories.include = function(properties) {
         }
       });
       return retval;
+    }
+  });
+};
+
+var Binner = {
+  breaks : function(breaks, x) {
+    var retval;
+    for(var i = 0;i < breaks.length;i++) {
+      if (x < breaks[i]) {
+        retval = i;
+        return retval.toString();
+      }
+    }
+    retval = breaks.length;
+    return retval.toString();
+  },
+  modulo : function(modulo, x) {
+    var retval = x % modulo;
+    return retval.toString();
+  },
+  division : function(den, x) {
+    var retval = Math.floor(x / den);
+    return retval.toString();
+  }
+};
+
+Transformer.factories.binning = function(properties) {
+  var propertiesObj = _.map(properties, function(property) {
+    return {
+      path: property.path.split("\u0002"),
+      type: property.type,
+      args: property.args
+    };
+  });
+  return ({
+    transform : function(obj) {
+      _.forEach(propertiesObj, function(property) {
+        var currentObj = obj, is_valid = true;
+        _.forEach(_.head(property.path, -1), function(key) {
+          if (!is_valid) return;
+          if (!_.has(currentObj, key)) {
+            is_valid = false;
+          }
+          currentObj = currentObj[key];
+        });
+        if (is_valid) {
+          var last_key = _.tail(property.path, -1);
+          if (!_.has(currentObj, last_key)) return;
+          if (!check.number(currentObj[last_key])) throw new Error("Binning a non-numeric field");
+          currentObj[last_key] = Binner[property.type](property.args, currentObj[last_key]);
+        }
+      });
+      return obj;
     }
   });
 };

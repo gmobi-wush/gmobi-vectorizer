@@ -33,6 +33,12 @@ describe("Test that Transformer transform the request object", function() {
             }
             result = JSON.stringify(dst) + "\n";
             assert.deepEqual(src, JSON.parse(line));
+            r = vectorizer.vectorize_sort(dst, true);
+            if (!!fname.match(/example3.ndjson/)) {
+              _.forEach(r.x, function(x) {
+                assert.equal(x, 1);
+              });
+            }            
           }
         cb(null, result);
       }))

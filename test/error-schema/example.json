@@ -2,11 +2,13 @@
   {
     "require" : ["app\u0002id", "device\u0002geo\u0002city"],
     "include" : [],
+    "binning" : [],
     "interaction" : []
   },
   {
     "require" : ["ext\u0002udi"],
     "include" : [],
+    "binning" : [],
     "interaction" : []
   }
 ]
