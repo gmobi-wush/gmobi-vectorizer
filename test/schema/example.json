@@ -3,6 +3,7 @@
     "require" : ["app\u0002id", "device\u0002geo\u0002country", "ext\u0002udi"],
     "include" : ["app", "device", "ext"],
     "binning" : [],
+    "split" : [],
     "interaction" : [
       ["app\u0002id", "device"]
     ]

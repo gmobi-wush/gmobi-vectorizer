@@ -9,6 +9,7 @@
         "args" : 100
       }
     ],
+    "split" : [],
     "interaction" : [
       ["ad\u0002id", "req"]
     ]

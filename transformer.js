@@ -1,4 +1,4 @@
-const 
+const
   _ = require('underscore'),
   check = require('check-types'),
   vectorizer = require('./vectorizer');
@@ -25,6 +25,7 @@ Transformer.prototype.initialize = function(schemas) {
     validateProperty(schema, "require");
     validateProperty(schema, "include");
     validateProperty(schema, "binning");
+    validateProperty(schema, "split");
     validateProperty(schema, "interaction");
   });
 
@@ -39,6 +40,9 @@ Transformer.prototype.initialize = function(schemas) {
     }
     if (schema.binning.length > 0) {
       $.transformersList.push(Transformer.factories.binning(schema.binning));
+    }
+    if (schema.split.length > 0) {
+      $.transformersList.push(Transformer.factories.split(schema.split));
     }
     _.forEach(schema.interaction, function(properties) {
       if (properties.length != 2) {
@@ -159,6 +163,38 @@ Transformer.factories.binning = function(properties) {
   });
 };
 
+Transformer.factories.split = function(properties) {
+  var propertiesObj = _.map(properties, function(property) {
+    return {
+      path : property.path.split("\u0002"),
+      delim : property.delim
+    };
+  });
+  return({
+    transform : function(obj) {
+      _.forEach(propertiesObj, function(property) {
+        var currentObj = obj, is_valid = true;
+        _.forEach(_.head(property.path, -1), function(key) {
+          if (!is_valid) return;
+          if (!_.has(currentObj, key)) {
+            is_valid = false;
+          }
+          currentObj = currentObj[key];
+        });
+        if (is_valid) {
+          var last_key = _.tail(property.path, -1);
+          if (!_.has(currentObj, last_key)) return;
+          if (!check.string(currentObj[last_key])) throw new Error("Splitting a non-string field");
+          currentObj[last_key] = _.filter(currentObj[last_key].split(property.delim), function(x) {
+            return x.length > 0;
+          });
+        }
+      });
+      return obj;
+    }
+  });
+}
+
 var interactionSeperator = "\u0002";
 Transformer.factories.interaction = function(property1, property2) {
   var property1Path = property1.split("\u0002");
@@ -174,13 +210,13 @@ Transformer.factories.interaction = function(property1, property2) {
         validateProperty(obj2, p);
         obj2 = obj2[p];
       });
-      var 
+      var
         vobj1 = vectorizer.vectorize(obj1, "", {i : [], x : []}, function(x) {return x;}),
         vobj2 = vectorizer.vectorize(obj2, "", {i : [], x : []}, function(x) {return x;});
       var retval = {};
       for(var i1 = 0;i1 < vobj1.i.length;i1++) {
         for(var i2 = 0;i2 < vobj2.i.length;i2++) {
-          var key = property1Path + vectorizer.keyValueSeperator + vobj1.i[i1] + 
+          var key = property1Path + vectorizer.keyValueSeperator + vobj1.i[i1] +
             interactionSeperator + property2Path + vectorizer.keyValueSeperator + vobj2.i[i2];
           var value = vobj1.x[i1] * vobj2.x[i2];
           retval[key] = value;
