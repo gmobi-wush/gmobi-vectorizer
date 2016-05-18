@@ -3,6 +3,8 @@ const
   vectorizer = require("./vectorizer"),
   transformer = require('./transformer');
 
+exports.hash = vectorizer.pmurhash32;
+
 exports.vectorize = function(obj, hash, errHandler) {
   if (hash) {
     return vectorizer.vectorize(obj, "", {i : [], x : []}, vectorizer.pmurhash32, errHandler);
