@@ -1,4 +1,4 @@
-const 
+const
   keyValueSeperator = '\1',
   _ = require("underscore"),
   mm3 = require("murmurhash3"),
@@ -17,8 +17,22 @@ function vectorize(obj, prefix, retval, operator, errHandler) {
     };
   }
   if (check.string(obj)) {
-    retval.i.push(obj);
+    retval.i.push(operator(obj));
     retval.x.push(1.0);
+    return retval;
+  }
+  if (check.array.of.string(obj)) {
+    _.forEach(obj, function(key) {
+      retval.i.push(operator(key));
+      retval.x.push(1.0);
+    });
+    return retval;
+  }
+  if (check.array.of.object(obj)) {
+    if (obj.length > 1) throw new Error("Array of Object should only has length 1 or 0(skipped)");
+    if (obj.length == 1) {
+      vectorize(obj[0], prefix, retval, operator, errHandler);
+    }
     return retval;
   }
   _.forEach(Object.keys(obj), function(key) {

@@ -195,10 +195,26 @@ Transformer.factories.split = function(properties) {
   });
 }
 
-var interactionSeperator = "\u0002";
+function typeCorrector(obj) {
+  if (check.object(obj)) {
+    return obj
+  } else if (check.string(obj)) {
+    return obj;
+  } else if (check.array.of.string(obj)) {
+    return obj;
+  } else if (check.array.of.object(obj)) {
+    return obj;
+  } else {
+    throw new Error("TODO");
+  }
+}
+
+var interactionSeperator = "\u0003";
 Transformer.factories.interaction = function(property1, property2) {
   var property1Path = property1.split("\u0002");
+  var property1PathKey = property1Path.join(vectorizer.keyValueSeperator);
   var property2Path = property2.split("\u0002");
+  var property2PathKey = property2Path.join(vectorizer.keyValueSeperator);
   return({
     transform: function(obj) {
       var obj1 = obj, obj2 = obj;
@@ -211,13 +227,13 @@ Transformer.factories.interaction = function(property1, property2) {
         obj2 = obj2[p];
       });
       var
-        vobj1 = vectorizer.vectorize(obj1, "", {i : [], x : []}, function(x) {return x;}),
-        vobj2 = vectorizer.vectorize(obj2, "", {i : [], x : []}, function(x) {return x;});
+        vobj1 = vectorizer.vectorize(typeCorrector(obj1), "", {i : [], x : []}, function(x) {return x;}),
+        vobj2 = vectorizer.vectorize(typeCorrector(obj2), "", {i : [], x : []}, function(x) {return x;});
       var retval = {};
       for(var i1 = 0;i1 < vobj1.i.length;i1++) {
         for(var i2 = 0;i2 < vobj2.i.length;i2++) {
-          var key = property1Path + vectorizer.keyValueSeperator + vobj1.i[i1] +
-            interactionSeperator + property2Path + vectorizer.keyValueSeperator + vobj2.i[i2];
+          var key = property1PathKey + vectorizer.keyValueSeperator + vobj1.i[i1] +
+            interactionSeperator + property2PathKey + vectorizer.keyValueSeperator + vobj2.i[i2];
           var value = vobj1.x[i1] * vobj2.x[i2];
           retval[key] = value;
         }

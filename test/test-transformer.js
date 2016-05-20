@@ -21,39 +21,44 @@ function testTransformer (desc, tester, schemas, only) {
   var d = describe;
   if (only) d = describe.only;
   d(desc, function() {
-    _.map(schemas, function(fname) {
-      it(fname, function(done) {
-        var schema = require('./schema/' + fname);
-        var transformer = new vectorizer.Transformer();
-        transformer.initialize(schema);
-        var spath = './test/ndjson/' + fname.replace('json', 'ndjson');
-        var dpath = './test-sync/js/' + fname.replace('json', 'transform.ndjson');
-        var d = fs.createWriteStream(dpath);
-        var s0 = fs.createReadStream(spath);
-        var s = s0.pipe(es.split())
-          .pipe(es.map(function(line, cb) {
-            var result;
-            if (line.length > 0) {
-              var src = JSON.parse(line);
-              var dst = transformer.transform(src);
-              assert.deepEqual(src, JSON.parse(line));
-              tester(dst);
-              result = JSON.stringify(dst) + "\n";
-            }
-          cb(null, result);
-        }))
-          .pipe(d);
-        s.on('finish', function() {
-          done();
+    _.chain(schemas)
+      .filter(function(fname) {
+        return fname === "private-example1.json";
+      })
+      .map(function(fname) {
+        it(fname, function(done) {
+          var schema = require('./schema/' + fname);
+          var transformer = new vectorizer.Transformer();
+          transformer.initialize(schema);
+          var spath = './test/ndjson/' + fname.replace('json', 'ndjson');
+          var dpath = './test-sync/js/' + fname.replace('json', 'transform.ndjson');
+          var d = fs.createWriteStream(dpath);
+          var s0 = fs.createReadStream(spath);
+          var s = s0.pipe(es.split())
+            .pipe(es.map(function(line, cb) {
+              var result;
+              if (line.length > 0) {
+                var src = JSON.parse(line);
+                var dst = transformer.transform(src);
+                assert.deepEqual(src, JSON.parse(line));
+                tester(dst);
+                result = JSON.stringify(dst) + "\n";
+              }
+            cb(null, result);
+          }))
+            .pipe(d);
+          s.on('finish', function() {
+            done();
+          });
         });
-      });
-    })
+      })
+      .value();
   });
 }
 
 testTransformer("Test that Transformer transform the request object", function(dst) {
   return;
-});
+}, null, true);
 
 testTransformer("Test the transformer of example2.ndjson does not contain ad.cap", function(dst) {
   assert.strictEqual(dst.ad.cap, undefined);
