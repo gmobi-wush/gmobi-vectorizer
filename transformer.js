@@ -21,30 +21,34 @@ Transformer.prototype.push = function(transformer) {
 Transformer.prototype.initialize = function(schemas) {
   // validate schemas
   if (!_.isArray(schemas)) new Error("schema should be an array of objects");
-  _.forEach(schemas, function(schema) {
-    validateProperty(schema, "require");
-    validateProperty(schema, "include");
-    validateProperty(schema, "binning");
-    validateProperty(schema, "split");
-    validateProperty(schema, "interaction");
-  });
 
   var $ = this;
   // generating transformations from schema
   _.forEach(schemas, function(schema) {
-    _.forEach(schema.require, function(property) {
+    if (!!schema.require) _.forEach(schema.require, function(property) {
       $.transformersList.push(Transformer.factories.require(property));
     });
-    if (schema.include.length > 0) {
-      $.transformersList.push(Transformer.factories.include(schema.include));
+    if (!!schema.include) {
+      if (schema.include.length > 0) {
+        $.transformersList.push(Transformer.factories.include(schema.include));
+      }
     }
-    if (schema.binning.length > 0) {
-      $.transformersList.push(Transformer.factories.binning(schema.binning));
+    if (!!schema.exclude) {
+      if (schema.exclude.length > 0) {
+        $.transformersList.push(Transformer.factories.exclude(schema.exclude));
+      }
     }
-    if (schema.split.length > 0) {
-      $.transformersList.push(Transformer.factories.split(schema.split));
+    if (!!schema.binning) {
+      if (schema.binning.length > 0) {
+        $.transformersList.push(Transformer.factories.binning(schema.binning));
+      }
     }
-    _.forEach(schema.interaction, function(properties) {
+    if (!!schema.split) {
+      if (schema.split.length > 0) {
+        $.transformersList.push(Transformer.factories.split(schema.split));
+      }
+    }
+    if (!!schema.interaction) _.forEach(schema.interaction, function(properties) {
       if (properties.length != 2) {
         throw Error("Invalid properties of interaction");
       }
@@ -109,6 +113,27 @@ Transformer.factories.include = function(properties) {
     }
   });
 };
+
+Transformer.factories.exclude = function(properties) {
+  var propertiesPath = _.map(properties, function(property) {
+    return property.split("\u0002");
+  });
+  return {
+    transform: function(obj) {
+      _.forEach(propertiesPath, function(property) {
+        var currentObj = obj;
+        _.forEach(_.head(property, -1), function(p) {
+          currentObj = currentObj[p];
+        });
+        var last_key = _.tail(property, -1);
+        if (_.has(currentObj, last_key)) {
+          delete currentObj[last_key];
+        }
+      });
+      return obj;
+    }
+  };
+}
 
 var Binner = {
   breaks : function(breaks, x) {

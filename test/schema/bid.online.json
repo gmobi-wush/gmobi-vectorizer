@@ -1,0 +1,51 @@
+[
+  [
+    {
+      "require" : ["bids\u0002req"],
+      "include" : [
+        "bids\u0002req\u0002adSizeRequest",
+        "bids\u0002req\u0002app",
+        "bids\u0002req\u0002at",
+        "bids\u0002req\u0002bcat",
+        "bids\u0002req\u0002device",
+        "bids\u0002req\u0002ext",
+        "bids\u0002req\u0002imp",
+        "bids\u0002req\u0002user"],
+      "binning" : [
+        { "path": "bids\u0002req\u0002at", "type":"division", "args":1 },
+        { "path": "bids\u0002req\u0002device\u0002connectiontype", "type":"division", "args":1 },
+        { "path": "bids\u0002req\u0002device\u0002divicetype", "type":"division", "args":1 },
+        { "path": "bids\u0002req\u0002device\u0002dnt", "type":"division", "args":1 },
+        { "path": "bids\u0002req\u0002device\u0002geo\u0002type", "type":"division", "args":1 },
+        { "path": "bids\u0002req\u0002device\u0002geo\u0002lat", "type":"division", "args":0.1 },
+        { "path": "bids\u0002req\u0002device\u0002geo\u0002lon", "type":"division", "args":0.1 },
+        { "path": "bids\u0002req\u0002device\u0002js", "type":"division", "args":1 },
+        { "path": "bids\u0002req\u0002ext\u0002coppa", "type":"division", "args":1 },
+        { "path": "bids\u0002req\u0002ext\u0002operaminibrowser", "type":"division", "args":1 },
+        { "path": "bids\u0002req\u0002ext\u0002udi\u0002googlednt", "type":"division", "args":1 },
+        { "path": "bids\u0002req\u0002imp\u00020\u0002banner\u0002h", "type":"division", "args":1},
+        { "path": "bids\u0002req\u0002imp\u00020\u0002banner\u0002pos", "type":"division", "args":1},
+        { "path": "bids\u0002req\u0002imp\u00020\u0002banner\u0002w", "type":"division", "args":1},
+        { "path": "bids\u0002req\u0002imp\u00020\u0002instl", "type":"division", "args":10},
+        { "path": "bids\u0002req\u0002user\u0002yob", "type":"division", "args":5}
+      ]
+    }
+  ],
+  [
+    {
+      "require" : ["bids\u0002ad", "bids\u0002req"],
+      "interaction" : [
+        ["bids\u0002ad\u0002id", "bids\u0002req\u0002app"],
+        ["bids\u0002ad\u0002id", "bids\u0002req\u0002at"],
+        ["bids\u0002ad\u0002id", "bids\u0002req\u0002bcat"],
+        ["bids\u0002ad\u0002id", "bids\u0002req\u0002device"],
+        ["bids\u0002ad\u0002id", "bids\u0002req\u0002ext"],
+        ["bids\u0002ad\u0002id", "bids\u0002req\u0002imp"],
+        ["bids\u0002ad\u0002id", "bids\u0002req\u0002user"]
+      ]
+    },
+    {
+      "exclude" : ["bids\u0002req"]
+    }
+  ]
+]
