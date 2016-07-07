@@ -1,3 +1,0 @@
-library(GmobiVectorizer)
-library(jsonlite)
-
