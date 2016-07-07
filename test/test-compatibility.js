@@ -12,7 +12,7 @@ const
 function getMD5(path, cb) {
   var hash = crypto.createHash('md5');
   hash.setEncoding('hex');
-  return fs.createReadStream("bid.vectorized.ndjson")
+  return fs.createReadStream(path)
     .pipe(hash)
     .on('finish', function() {
       hash.end();
@@ -21,7 +21,7 @@ function getMD5(path, cb) {
 }
 
 describe("Test that the module creates the same object as the one online", function() {
-  it("Test the test/ndjson/bid.ndjson.gz", function(done) {
+  it("Test the test/ndjson/bid.ndjson.gz without hash", function(done) {
     var schema = require(__dirname + '/schema/bid.json');
     var transformer = new vectorizer.Transformer();
     transformer.initialize(schema);
@@ -33,26 +33,82 @@ describe("Test that the module creates the same object as the one online", funct
           obj = {
             bids : JSON.parse(line)
           };
-          obj.bids.ad = {
-            id : "56fce4c2ac79e5824c45608e",
-            cid : "56fce40aac79e5824c456086"
-          };
         } catch(ex) {
           return cb(null, "");
         }
-        for(var i = 0;i < 100;i++) {
+        var retval = [];
+        for(var j = 0;j < 100;j++) {
+          obj.bids.ad = {
+            id : "56fce4c2ac79e5824c45608e" + j,
+            cid : "56fce40aac79e5824c456086" + j
+          };
           var features = transformer.transform(obj);
-          var vec = vectorizer.vectorize(features, true, function(err) { });
+          var result = vectorizer.vectorize(features, false, function(err) { });
+          var index = [];
+          for(i = 0;i < result.i.length;i++) {
+            index.push(i);
+          }
+          index = _.sortBy(index, function(i) {return result.i[i];});
+          retval.push(JSON.stringify({
+            i: _.map(index, function(i) {return result.i[i];}),
+            x: _.map(index, function(i) {return result.x[i];})
+          }));
         }
-        return cb(null, JSON.stringify(vec) + "\n");
+        return cb(null, retval.join("\n") + "\n");
       }))
       .pipe(fs.createWriteStream("bid.vectorized.ndjson"))
       .on('finish', function() {
         return getMD5("bid.vectorized.ndjson", function(err, result) {
           if (err) throw err;
-          assert(result === "5bc08dc2d50ae9fac9f820dda5e53ce6");
+          assert(result === "2e41f578c5fe3b2e45f05344fcd11081");
           return done();
         });
       });
   });
+
+  it("Test the test/ndjson/bid.ndjson.gz with hash", function(done) {
+    var schema = require(__dirname + '/schema/bid.json');
+    var transformer = new vectorizer.Transformer();
+    transformer.initialize(schema);
+    return fs.createReadStream("test/ndjson/bid.ndjson.gz").pipe(zlib.createGunzip())
+      .pipe(es.split())
+      .pipe(es.map(function(line, cb) {
+        var obj;
+        try {
+          obj = {
+            bids : JSON.parse(line)
+          };
+        } catch(ex) {
+          return cb(null, "");
+        }
+        var retval = [];
+        for(var j = 0;j < 100;j++) {
+          obj.bids.ad = {
+            id : "56fce4c2ac79e5824c45608e" + j,
+            cid : "56fce40aac79e5824c456086" + j
+          };
+          var features = transformer.transform(obj);
+          var result = vectorizer.vectorize(features, true, function(err) { });
+          var index = [];
+          for(i = 0;i < result.i.length;i++) {
+            index.push(i);
+          }
+          index = _.sortBy(index, function(i) {return result.i[i];});
+          retval.push(JSON.stringify({
+            i: _.map(index, function(i) {return result.i[i];}),
+            x: _.map(index, function(i) {return result.x[i];})
+          }));
+        }
+        return cb(null, retval.join("\n") + "\n");
+      }))
+      .pipe(fs.createWriteStream("bid.vectorized.hashed.ndjson"))
+      .on('finish', function() {
+        return getMD5("bid.vectorized.hashed.ndjson", function(err, result) {
+          if (err) throw err;
+          assert(result === "46e919d196d93ae76b51c441a9784b19");
+          return done();
+        });
+      });
+  });
+
 });
