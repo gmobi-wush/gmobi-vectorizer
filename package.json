@@ -1,13 +1,13 @@
 {
   "name": "gmobi-vectorizer",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "Transforming json to sparse vector with hashing trick",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha -t 0 test/test-compatibility.js"
   },
   "repository": {
     "type": "git",
