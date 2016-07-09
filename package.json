@@ -28,6 +28,7 @@
     "should": "^4.6.1",
     "mocha": "^2.4.5",
     "event-stream": "^3.3.2",
-    "jsonfile": "^2.3.0"
+    "jsonfile": "^2.3.0",
+    "async" : "~0.2.9"
   }
 }
