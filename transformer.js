@@ -256,9 +256,10 @@ Transformer.factories.interaction = function(property1, property2) {
         vobj2 = vectorizer.vectorize(typeCorrector(obj2), "", {i : [], x : []}, function(x) {return x;});
       var retval = {};
       for(var i1 = 0;i1 < vobj1.i.length;i1++) {
+        var key1 = property1PathKey + vectorizer.keyValueSeperator + vobj1.i[i1] +
+          interactionSeperator + property2PathKey + vectorizer.keyValueSeperator;
         for(var i2 = 0;i2 < vobj2.i.length;i2++) {
-          var key = property1PathKey + vectorizer.keyValueSeperator + vobj1.i[i1] +
-            interactionSeperator + property2PathKey + vectorizer.keyValueSeperator + vobj2.i[i2];
+          var key = key1 + vobj2.i[i2];
           var value = vobj1.x[i1] * vobj2.x[i2];
           retval[key] = value;
         }

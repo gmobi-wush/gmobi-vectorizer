@@ -71,6 +71,8 @@ function testAndEval(prepare, operation, describeName, itName) {
                   x: _.map(index, function(i) {return result.x[i];})
                 }));
               } // for j
+              delete obj.bids.ad;
+              assert(_.isEqual(obj.bids, JSON.parse(line)));              
               return esmapCB(null, retval.join("\n") + "\n");
             })) // pipe(es.map(...))
             .pipe(fs.createWriteStream(dst))

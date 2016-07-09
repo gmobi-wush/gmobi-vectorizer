@@ -15,7 +15,7 @@ try {
 }
 
 function pmurhash32(s) {
-  return cmodule.pmurhash32(s) % size;
+  return cmodule.pmurhash32(s);
 }
 
 function vectorize(obj, prefix, retval, operator, errHandler) {
