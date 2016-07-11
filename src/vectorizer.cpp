@@ -6,7 +6,7 @@
 #include <node.h>
 #include <v8.h>
 #include "pmurhash.h"
-//#include <v8-convert.hpp>
+#include <v8-convert.hpp>
 
 using v8::Handle;
 using v8::HandleScope;
@@ -200,6 +200,10 @@ Handle<Value> vectorizeHash(const Arguments& args) {
     SparseVector<unsigned int> retval;
     std::string prefix(s, len);
     vectorizeHashInternal(obj, prefix, retval, skip_field);
+    Local<Object> retval_obj = Object::New();
+    retval_obj->Set(String::NewSymbol("i"), cvv8::CastToJS<std::vector<unsigned int> >(retval.i));
+    retval_obj->Set(String::NewSymbol("x"), cvv8::CastToJS<std::vector<double> >(retval.x));
+    return scope.Close(retval_obj);
   } catch(std::exception& e) {
     ThrowException(Exception::Error(String::New(e.what())));
   }
@@ -207,8 +211,8 @@ Handle<Value> vectorizeHash(const Arguments& args) {
 }
 
 void init(Handle<Object> exports) {
-  exports->Set(String::NewSymbol("pmurhash32"),
-      FunctionTemplate::New(pmurhash32)->GetFunction());
+  exports->Set(String::NewSymbol("pmurhash32"), FunctionTemplate::New(pmurhash32)->GetFunction());
+  exports->Set(String::NewSymbol("vectorizeHash"), FunctionTemplate::New(vectorizeHash)->GetFunction());
 }
 
 NODE_MODULE(cmodule, init)
