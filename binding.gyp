@@ -5,8 +5,8 @@
       "sources": [ "src/vectorizer.cpp", "src/pmurhash.c" ],
     #   'cflags_cc': ['-fexceptions', '-O3'],
     #   'cflags_cc!': ['-fno-exceptions', '-fno-rtti'],
-      "link_settings": {
-      },
+      "link_settings": { },
+      "include_dirs" : ["."],
       'conditions': [
         [ 'OS!="win"', {
           "cflags+": [ "-std=c++11", "-O3" ],
