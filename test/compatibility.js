@@ -72,19 +72,22 @@ function testAndEval(prepare, operation, describeName, itName) {
                 }));
               } // for j
               delete obj.bids.ad;
-              assert(_.isEqual(obj.bids, JSON.parse(line)));              
+              assert(_.isEqual(obj.bids, JSON.parse(line)));
               return esmapCB(null, retval.join("\n") + "\n");
             })) // pipe(es.map(...))
             .pipe(fs.createWriteStream(dst))
             .on('finish', function() {
               return getMD5(dst, function(err, result) {
                 if (err) return asyncCB(err, null);
-                if (isHash) {
-                  assert(result === "46e919d196d93ae76b51c441a9784b19");
-                } else {
-                  assert(result === "2e41f578c5fe3b2e45f05344fcd11081");
+                try {
+                  if (isHash) {
+                    assert(result === "46e919d196d93ae76b51c441a9784b19");
+                  } else {
+                    assert(result === "2e41f578c5fe3b2e45f05344fcd11081");
+                  }
+                } catch (ex) {
+                  return asyncCB(ex, {totalTime : totalTime, count : count});
                 }
-                return asyncCB(err, {totalTime : totalTime, count : count});
               }); // getMD5
             }); // on finish
         };
@@ -93,31 +96,35 @@ function testAndEval(prepare, operation, describeName, itName) {
     return describe(describeName || "testAndEval", function() {
       it(itName || ("test " + srcs.join(",") + " without Hash"), function(done) {
         return async.series(getTasks(false), function(err, results) {
+          if (results) {
+            var totalTime = _.chain(results)
+              .map(function(x) {return x.totalTime;})
+              .reduce(function(a, b) {return a + b;})
+              .value();
+            var count = _.chain(results)
+              .map(function(x) {return x.count;})
+              .reduce(function(a, b) {return a + b;})
+              .value();
+            console.log("totalTime: " + totalTime + " ms, avgTime: " + totalTime / count + " ms");
+          }
           if (err) throw err;
-          var totalTime = _.chain(results)
-            .map(function(x) {return x.totalTime;})
-            .reduce(function(a, b) {return a + b;})
-            .value();
-          var count = _.chain(results)
-            .map(function(x) {return x.count;})
-            .reduce(function(a, b) {return a + b;})
-            .value();
-          console.log("totalTime: " + totalTime + " ms, avgTime: " + totalTime / count + " ms");
           return done();
         });
       });
       it(itName || ("test " + srcs.join(",") + " with Hash"), function(done) {
         return async.series(getTasks(true), function(err, results) {
+          if (results) {
+            var totalTime = _.chain(results)
+              .map(function(x) {return x.totalTime;})
+              .reduce(function(a, b) {return a + b;})
+              .value();
+            var count = _.chain(results)
+              .map(function(x) {return x.count;})
+              .reduce(function(a, b) {return a + b;})
+              .value();
+              console.log("totalTime: " + totalTime + " ms, avgTime: " + totalTime / count + " ms");
+          }
           if (err) throw err;
-          var totalTime = _.chain(results)
-            .map(function(x) {return x.totalTime;})
-            .reduce(function(a, b) {return a + b;})
-            .value();
-          var count = _.chain(results)
-            .map(function(x) {return x.count;})
-            .reduce(function(a, b) {return a + b;})
-            .value();
-          console.log("totalTime: " + totalTime + " ms, avgTime: " + totalTime / count + " ms");
           return done();
         });
       });
