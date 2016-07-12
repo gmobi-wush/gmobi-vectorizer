@@ -12,6 +12,8 @@ env:
 
 before_install:
   - npm install npm
+  - npm install node-gyp
+  - node-gyp configure
 
 before_script:
   - echo $R_LIBS_USER
