@@ -11,6 +11,8 @@ env:
   - CXX=g++-4.8 R_LIBS_USER=$HOME/R/Library
 
 before_install:
+  - npm install npm
+  - npm install node-gyp
   - node-gyp rebuild --verbose
 
 before_script:
