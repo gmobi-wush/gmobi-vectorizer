@@ -10,6 +10,9 @@ node_js:
 env:
   - CXX=g++-4.8 R_LIBS_USER=$HOME/R/Library
 
+before_install:
+  - node-gyp rebuild --verbose
+
 before_script:
   - echo $R_LIBS_USER
   - ls $R_LIBS_USER || mkdir -p $R_LIBS_USER
