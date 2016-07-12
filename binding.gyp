@@ -10,7 +10,7 @@
       'conditions': [
         [ 'OS!="win"', {
           "cflags+": [ "-std=c++11", "-O3" ],
-          "cflags_c+": [ "-std=c++11", "-O3" ],
+          "cflags_c+": [ "-O3" ],
           "cflags_cc+": [ "-std=c++11", "-O3" ],
         }],
         [ 'OS=="mac"', {
