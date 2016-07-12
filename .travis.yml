@@ -13,7 +13,7 @@ env:
 before_install:
   - npm install npm
   - npm install node-gyp
-  - node-gyp configure
+  - node-gyp rebuild --verbose
 
 before_script:
   - echo $R_LIBS_USER
@@ -26,7 +26,6 @@ before_script:
   - mkdir -p test-sync/js-raw
 #  - mkdir -p test-sync/R-raw
 #  - R CMD check pkg --no-manual
-  - node-gyp rebuild --verbose
 
 script: 
   - npm test
