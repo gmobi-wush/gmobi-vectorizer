@@ -10,37 +10,18 @@ node_js:
 env:
   - CXX=g++-4.8 R_LIBS_USER=$HOME/R/Library
 
-before_install:
-  - npm install npm
-  - npm install node-gyp
-
 before_script:
   - echo $R_LIBS_USER
   - ls $R_LIBS_USER || mkdir -p $R_LIBS_USER
-#  - Rscript -e "install.packages(c('Rcpp', 'digest', 'jsonlite'), repos = c(CRAN = 'http://cran.rstudio.com'))"
-#  - wget https://raw.githubusercontent.com/craigcitro/r-travis/master/scripts/travis-tool.sh
-#  - bash travis-tool.sh dump_sysinfo
   - mkdir -p test-sync/js
-#  - mkdir -p test-sync/R
   - mkdir -p test-sync/js-raw
-#  - mkdir -p test-sync/R-raw
-#  - R CMD check pkg --no-manual
 
 script: 
   - npm test
-#  - R CMD INSTALL pkg && Rscript test-sync.R
-#  - Rscript check-sync.R
-
-#after_success:
-#  - bash travis-tool.sh dump_logs_by_extension out
-#after_failure:
-#  - bash travis-tool.sh dump_logs
 
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-#      - r-packages-precise
     packages:
       - g++-4.8
-#      - r-base
