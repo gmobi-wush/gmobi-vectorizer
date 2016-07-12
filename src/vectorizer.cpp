@@ -6,7 +6,7 @@
 #include <node.h>
 #include <v8.h>
 #include "pmurhash.h"
-#include <v8-convert.hpp>
+#include <cvv8/v8-convert.hpp>
 
 using v8::Handle;
 using v8::HandleScope;
