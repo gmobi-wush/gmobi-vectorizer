@@ -1,13 +1,21 @@
 const
   keyValueSeperator = '\1',
   _ = require("underscore"),
-  mm3 = require("murmurhash3"),
+  // mm3 = require("murmurhash3"),
   check = require('check-types'),
   seed = 20160419,
   size = 4194304;
 
+var cmodule;
+try {
+  cmodule = require(__dirname + '/build/Release/cmodule');
+} catch(e) {
+  console.log(e.message);
+  cmodule = require(__dirname + '/build/default/cmodule');
+}
+
 function pmurhash32(s) {
-  return mm3.murmur32Sync(s, seed) % size;
+  return cmodule.pmurhash32(s);
 }
 
 function vectorize(obj, prefix, retval, operator, errHandler) {
