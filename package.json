@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha -t 0 test/test-compatibility.js"
+    "test": "bash -x test.sh"
   },
   "repository": {
     "type": "git",
