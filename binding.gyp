@@ -3,8 +3,8 @@
     {
       "target_name": "cmodule",
       "sources": [ "src/vectorizer.cpp", "src/pmurhash.c" ],
-    #   'cflags_cc': ['-fexceptions', '-O3'],
-    #   'cflags_cc!': ['-fno-exceptions', '-fno-rtti'],
+      'cflags_cc': ['-fexceptions', '-O3'],
+      'cflags_cc!': ['-fno-exceptions', '-fno-rtti'],
       "link_settings": { },
       "include_dirs" : ["."],
       'conditions': [
