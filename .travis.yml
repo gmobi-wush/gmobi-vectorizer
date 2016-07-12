@@ -26,6 +26,7 @@ before_script:
   - mkdir -p test-sync/js-raw
 #  - mkdir -p test-sync/R-raw
 #  - R CMD check pkg --no-manual
+  - node-gyp rebuild --verbose
 
 script: 
   - npm test
