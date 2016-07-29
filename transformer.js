@@ -48,6 +48,9 @@ Transformer.prototype.initialize = function(schemas) {
         $.transformersList.push(Transformer.factories.split(schema.split));
       }
     }
+		if (!!schema.removeInteraction) {
+			$.transformersList.push(Transformer.factories.removeInteraction());
+		}
     if (!!schema.interaction) _.forEach(schema.interaction, function(properties) {
       if (properties.length != 2) {
         throw Error("Invalid properties of interaction");
@@ -218,6 +221,18 @@ Transformer.factories.split = function(properties) {
       return obj;
     }
   });
+}
+
+var keyValueSeperatorRegex = new RegExp(vectorizer.keyValueSeperator, "i");
+Transformer.factories.removeInteraction = function() {
+	return({
+		transform : function(obj) {
+			var keys = _.filter(_.keys(obj), function(key) {
+				return !keyValueSeperatorRegex.test(key);
+			});
+			return _.pick(obj, keys);
+		}
+	});
 }
 
 function typeCorrector(obj) {
